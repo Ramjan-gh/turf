@@ -20,7 +20,7 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
 
   return (
     <>
-      <motion.header 
+      <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         className="bg-[#E0ECDE] backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50 shadow-sm"
@@ -28,12 +28,12 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
         <div className="px-4 py-3 flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
             <motion.button
-              onClick={() => onViewChange('home')}
+              onClick={() => onViewChange("home")}
               className="flex items-center gap-2"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <motion.div 
+              <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                 className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg"
@@ -50,27 +50,42 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
           <div className="hidden md:flex items-center gap-3">
             {currentUser ? (
               <>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <Button
                     variant="ghost"
-                    onClick={() => onViewChange('home')}
-                    className={currentView === 'home' ? 'bg-green-50 text-green-700' : ''}
+                    onClick={() => onViewChange("home")}
+                    className={
+                      currentView === "home" ? "bg-green-50 text-green-700" : ""
+                    }
                   >
                     <Home className="w-4 h-4 mr-2" />
                     Home
                   </Button>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <Button
                     variant="ghost"
-                    onClick={() => onViewChange('profile')}
-                    className={currentView === 'profile' ? 'bg-green-50 text-green-700' : ''}
+                    onClick={() => onViewChange("profile")}
+                    className={
+                      currentView === "profile"
+                        ? "bg-green-50 text-green-700"
+                        : ""
+                    }
                   >
                     <UserIcon className="w-4 h-4 mr-2" />
                     Profile
                   </Button>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <Button variant="ghost" onClick={onLogout}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Logout
@@ -78,10 +93,13 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
                 </motion.div>
               </>
             ) : (
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  onClick={() => setShowAuthModal(true)} 
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0"
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  onClick={() => setShowAuthModal(true)}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-800 hover:to-emerald-800 text-white border-0 transition-colors duration-200"
                 >
                   Login / Register
                 </Button>
@@ -108,10 +126,12 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
                       <Button
                         variant="ghost"
                         onClick={() => {
-                          onViewChange('home');
+                          onViewChange("home");
                           setMobileMenuOpen(false);
                         }}
-                        className={`justify-start ${currentView === 'home' ? 'bg-gray-100' : ''}`}
+                        className={`justify-start ${
+                          currentView === "home" ? "bg-gray-100" : ""
+                        }`}
                       >
                         <Home className="w-4 h-4 mr-2" />
                         Home
@@ -119,10 +139,12 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
                       <Button
                         variant="ghost"
                         onClick={() => {
-                          onViewChange('profile');
+                          onViewChange("profile");
                           setMobileMenuOpen(false);
                         }}
-                        className={`justify-start ${currentView === 'profile' ? 'bg-gray-100' : ''}`}
+                        className={`justify-start ${
+                          currentView === "profile" ? "bg-gray-100" : ""
+                        }`}
                       >
                         <UserIcon className="w-4 h-4 mr-2" />
                         Profile

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { User, Booking } from "../App";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+
 import {
   Calendar,
   ChevronLeft,
@@ -233,11 +234,17 @@ export function HomePage({ currentUser }: HomePageProps) {
             <motion.button
               key={sport.id}
               onClick={() => setSelectedSport(sport.id)}
-              whileHover={{ scale: 1.05, y: -5 }}
+              whileHover={{
+                scale: 1.05,
+                transition: { duration: 0.1 }, // faster hover
+              }}
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + index * 0.1 }}
+              transition={{
+                delay: 0.6 + index * 0.1, // keeps original translation delay
+                scale: { duration: 0.08 }, // fast unhover
+              }}
               className={`relative overflow-hidden rounded-2xl transition-all shadow-lg ${
                 selectedSport === sport.id ? "ring-4 ring-green-400" : ""
               }`}
@@ -287,7 +294,7 @@ export function HomePage({ currentUser }: HomePageProps) {
         </div>
       </motion.div>
       {/* calender and slot  */}
-      <div className="flex flex-col  md:flex-row w-full md:justify-center gap-8  p-4 rounded-xl drop-shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 " >
+      <div className="flex flex-col  md:flex-row w-full md:justify-center gap-8  p-4 rounded-xl drop-shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 ">
         {/* Date Selector - Calendar View */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -347,15 +354,25 @@ export function HomePage({ currentUser }: HomePageProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="mt-6 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl text-center"
+                className="mt-6 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl md:text-center"
               >
-                <div className="text-sm text-gray-600 mb-1">Selected Date</div>
-                <div className="text-green-900 flex items-center justify-center gap-2">
+                <div className="text-sm text-gray-600 mb-1 flex justify-between md:flex-col">
+                  <div>Selected Date</div>
+                  {isToday && (
+                    <Badge
+                      variant="secondary"
+                      className="md:hidden bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs"
+                    >
+                      Today
+                    </Badge>
+                  )}
+                </div>
+                <div className="text-green-900 flex items-center justify-between md:justify-center gap-2">
                   {format(selectedDate, "EEEE, MMMM d, yyyy")}
                   {isToday && (
                     <Badge
                       variant="secondary"
-                      className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs"
+                      className="hidden md:block bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0 text-xs"
                     >
                       Today
                     </Badge>
@@ -364,7 +381,7 @@ export function HomePage({ currentUser }: HomePageProps) {
               </motion.div>
             </AnimatePresence>
             {/* Days of Week Header */}
-            <div className="grid grid-cols-7 gap-2 mb-3">
+            <div className="grid grid-cols-7 gap-2 mb-3 max-w-[350px] w-full mx-auto">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                 <div
                   key={day}
@@ -377,42 +394,43 @@ export function HomePage({ currentUser }: HomePageProps) {
 
             {/* Calendar Grid */}
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={format(currentMonth, "yyyy-MM")}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="grid grid-cols-7 gap-2"
-              >
-                {getDaysInMonth().map((day, index) => {
-                  if (!day) {
+            <div className="w-full max-w-[350px] mx-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={format(currentMonth, "yyyy-MM")}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="grid grid-cols-7 gap-2 md:min-h-[340px]"
+                >
+                  {getDaysInMonth().map((day, index) => {
+                    if (!day) {
+                      return (
+                        <div key={`empty-${index}`} className="aspect-square" />
+                      );
+                    }
+
+                    const isSelected = isSameDay(day, selectedDate);
+                    const isCurrentDay = isSameDay(day, new Date());
+                    const isPastDay = isBefore(day, startOfDay(new Date()));
+                    const isCurrentMonthDay = isSameMonth(day, currentMonth);
+
                     return (
-                      <div key={`empty-${index}`} className="aspect-square" />
-                    );
-                  }
-
-                  const isSelected = isSameDay(day, selectedDate);
-                  const isCurrentDay = isSameDay(day, new Date());
-                  const isPastDay = isBefore(day, startOfDay(new Date()));
-                  const isCurrentMonthDay = isSameMonth(day, currentMonth);
-
-                  return (
-                    <motion.button
-                      key={day.toISOString()}
-                      onClick={() => !isPastDay && setSelectedDate(day)}
-                      disabled={isPastDay}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        delay: index * 0.01,
-                        duration: 0.2,
-                        ease: "easeOut",
-                      }}
-                      whileHover={!isPastDay ? { scale: 1.1, y: -2 } : {}}
-                      whileTap={!isPastDay ? { scale: 0.95 } : {}}
-                      className={`
+                      <motion.button
+                        key={day.toISOString()}
+                        onClick={() => !isPastDay && setSelectedDate(day)}
+                        disabled={isPastDay}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          delay: index * 0.01,
+                          duration: 0.2,
+                          ease: "easeOut",
+                        }}
+                        whileHover={!isPastDay ? { scale: 1.1, y: -2 } : {}}
+                        whileTap={!isPastDay ? { scale: 0.95 } : {}}
+                        className={`
                       aspect-square rounded-xl p-2 transition-all duration-200 relative
                       ${
                         isPastDay
@@ -426,37 +444,38 @@ export function HomePage({ currentUser }: HomePageProps) {
                           : "bg-transparent text-gray-400"
                       }
                     `}
-                    >
-                      <div className="relative z-10 flex items-center justify-center h-full">
-                        {format(day, "d")}
-                      </div>
+                      >
+                        <div className="relative z-10 flex items-center justify-center h-full">
+                          {format(day, "d")}
+                        </div>
 
-                      {/* Today indicator */}
-                      {isCurrentDay && !isSelected && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-green-600 rounded-full"
-                        />
-                      )}
+                        {/* Today indicator */}
+                        {isCurrentDay && !isSelected && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-green-600 rounded-full"
+                          />
+                        )}
 
-                      {/* Selected animation */}
-                      {isSelected && (
-                        <motion.div
-                          layoutId="selectedDate"
-                          className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl -z-10"
-                          transition={{
-                            type: "spring",
-                            bounce: 0.2,
-                            duration: 0.6,
-                          }}
-                        />
-                      )}
-                    </motion.button>
-                  );
-                })}
-              </motion.div>
-            </AnimatePresence>
+                        {/* Selected animation */}
+                        {isSelected && (
+                          <motion.div
+                            layoutId="selectedDate"
+                            className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl -z-10"
+                            transition={{
+                              type: "spring",
+                              bounce: 0.2,
+                              duration: 0.6,
+                            }}
+                          />
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </motion.div>
+              </AnimatePresence>{" "}
+            </div>
           </div>
         </motion.div>
         {/* Available Slots */}
@@ -467,21 +486,21 @@ export function HomePage({ currentUser }: HomePageProps) {
           className="space-y-4"
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-green-900 flex items-center gap-2">
+            <h2 className="text-green-900 md:text-xs lg:text-base flex items-center gap-2 md:gap-0 lg:gap-2">
               <Zap className="w-5 h-5 text-green-600" />
               Available Slots
             </h2>
             <div className="flex gap-3 text-xs">
               <motion.div
                 whileHover={{ scale: 1.1 }}
-                className="flex items-center gap-1.5 bg-green-50 px-3 py-1.5 rounded-full"
+                className="flex items-center gap-1.5 md:gap-0 lg:gap-2 bg-green-50 px-3 py-1.5 rounded-full"
               >
                 <div className="w-3 h-3 rounded-full bg-gradient-to-br from-green-400 to-emerald-500"></div>
                 <span className="text-gray-700">Available</span>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.1 }}
-                className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-full"
+                className="flex items-center gap-1.5 md:gap-0 lg:gap-2 bg-gray-50 px-3 py-1.5 rounded-full"
               >
                 <div className="w-3 h-3 rounded-full bg-gradient-to-br from-gray-300 to-gray-400"></div>
                 <span className="text-gray-700">Booked</span>
@@ -489,7 +508,7 @@ export function HomePage({ currentUser }: HomePageProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {TIME_SLOTS.map((time, index) => {
               const booked = isSlotBooked(time);
               return (
