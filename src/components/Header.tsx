@@ -98,8 +98,9 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
                 whileTap={{ scale: 0.95 }}
               >
                 <Button
+                  variant="ghost"
                   onClick={() => setShowAuthModal(true)}
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-800 hover:to-emerald-800 text-white border-0 transition-colors duration-200"
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 text-white border-0 transition-colors duration-200"
                 >
                   Login / Register
                 </Button>
