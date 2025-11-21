@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { HomePage } from './components/HomePage';
 import { UserProfile } from './components/UserProfile';
+import { AboutUs } from "./components/AboutUs";
+import { ContactUs } from "./components/ContactUs";
+import { Gallery } from "./components/Gallery";
+import { CheckBooking } from "./components/CheckBooking";
 import { Toaster } from './components/ui/sonner';
 
 export type User = {
@@ -31,7 +35,9 @@ export type Booking = {
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'profile'>('home');
+   const [currentView, setCurrentView] = useState<
+     "home" | "profile" | "about" | "contact" | "gallery" | "check-booking"
+   >("home");
 
   useEffect(() => {
     // Check if user is logged in
@@ -61,13 +67,16 @@ export default function App() {
         currentView={currentView}
         onViewChange={setCurrentView}
       />
-      
+
       <main className="pb-20">
-        {currentView === 'home' ? (
-          <HomePage currentUser={currentUser} />
-        ) : (
+        {currentView === "home" && <HomePage currentUser={currentUser} />}
+        {currentView === "profile" && (
           <UserProfile currentUser={currentUser} onLogout={handleLogout} />
         )}
+        {currentView === "about" && <AboutUs />}
+        {currentView === "contact" && <ContactUs />}
+        {currentView === "gallery" && <Gallery />}
+        {currentView === "check-booking" && <CheckBooking />}
       </main>
 
       <Toaster />

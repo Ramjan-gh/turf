@@ -1,6 +1,15 @@
 import { User } from '../App';
 import { Button } from './ui/button';
-import { Menu, User as UserIcon, Home, LogOut } from 'lucide-react';
+import {
+  Menu,
+  User as UserIcon,
+  Home,
+  LogOut,
+  Info,
+  Mail,
+  Image,
+  Search,
+} from "lucide-react";
 import { useState } from 'react';
 import { AuthModal } from './AuthModal';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
@@ -10,13 +19,30 @@ type HeaderProps = {
   currentUser: User | null;
   onLogin: (user: User) => void;
   onLogout: () => void;
-  currentView: 'home' | 'profile';
-  onViewChange: (view: 'home' | 'profile') => void;
+  currentView:
+    | "home"
+    | "profile"
+    | "about"
+    | "contact"
+    | "gallery"
+    | "check-booking";
+  onViewChange: (
+    view: "home" | "profile" | "about" | "contact" | "gallery" | "check-booking"
+  ) => void;
 };
 
 export function Header({ currentUser, onLogin, onLogout, currentView, onViewChange }: HeaderProps) {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { id: "home" as const, label: "Home", icon: Home },
+    { id: "about" as const, label: "About", icon: Info },
+    { id: "gallery" as const, label: "Gallery", icon: Image },
+    { id: "check-booking" as const, label: "Track Booking", icon: Search },
+    { id: "contact" as const, label: "Contact", icon: Mail },
+  ];
+
 
   return (
     <>
@@ -47,24 +73,27 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
+            {navItems.map((item) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button
+                  variant="ghost"
+                  onClick={() => onViewChange(item.id)}
+                  className={`${
+                    currentView === item.id ? "bg-green-50 text-green-700" : ""
+                  }`}
+                >
+                  <item.icon className="w-4 h-4 mr-2" />
+                  {item.label}
+                </Button>
+              </motion.div>
+            ))}
             {currentUser ? (
               <>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    variant="ghost"
-                    onClick={() => onViewChange("home")}
-                    className={
-                      currentView === "home" ? "bg-green-50 text-green-700" : ""
-                    }
-                  >
-                    <Home className="w-4 h-4 mr-2" />
-                    Home
-                  </Button>
-                </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -109,7 +138,7 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
           </div>
 
           {/* Mobile Navigation */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -118,25 +147,36 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
               </SheetTrigger>
               <SheetContent side="right" className="w-64">
                 <div className="flex flex-col gap-2 mt-8">
+                  {currentUser && (
+                    <div className="pb-4 pl-3 mb-4 border-b-2 border-purple-200">
+                      <p className="text-sm text-gray-500">Logged in as</p>
+                      <p className="text-black/80 font-semibold">
+                        {currentUser.name}
+                      </p>
+                    </div>
+                  )}
+
+                  {navItems.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant="ghost"
+                      onClick={() => {
+                        onViewChange(item.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`justify-start ${
+                        currentView === item.id
+                          ? "bg-gradient-to-r from-purple-100 to-pink-100"
+                          : ""
+                      }`}
+                    >
+                      <item.icon className="w-4 h-4 mr-2" />
+                      {item.label}
+                    </Button>
+                  ))}
+
                   {currentUser ? (
                     <>
-                      <div className="pb-4 mb-4 border-b">
-                        <p className="text-sm text-gray-500">Logged in as</p>
-                        <p>{currentUser.name}</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          onViewChange("home");
-                          setMobileMenuOpen(false);
-                        }}
-                        className={`justify-start ${
-                          currentView === "home" ? "bg-gray-100" : ""
-                        }`}
-                      >
-                        <Home className="w-4 h-4 mr-2" />
-                        Home
-                      </Button>
                       <Button
                         variant="ghost"
                         onClick={() => {
@@ -144,7 +184,9 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
                           setMobileMenuOpen(false);
                         }}
                         className={`justify-start ${
-                          currentView === "profile" ? "bg-gray-100" : ""
+                          currentView === "profile"
+                            ? "bg-gradient-to-r from-purple-100 to-pink-100"
+                            : ""
                         }`}
                       >
                         <UserIcon className="w-4 h-4 mr-2" />
@@ -156,7 +198,7 @@ export function Header({ currentUser, onLogin, onLogout, currentView, onViewChan
                           onLogout();
                           setMobileMenuOpen(false);
                         }}
-                        className="justify-start"
+                        className="justify-start text-red-600 hover:bg-red-50"
                       >
                         <LogOut className="w-4 h-4 mr-2" />
                         Logout

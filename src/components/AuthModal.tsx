@@ -73,7 +73,7 @@ export function AuthModal({ open, onClose, onLogin }: AuthModalProps) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-green-600" />
+              <Sparkles className="w-5 h-5 text-green-600 mb-4" />
               Login or Register
             </DialogTitle>
           </DialogHeader>
@@ -121,7 +121,8 @@ export function AuthModal({ open, onClose, onLogin }: AuthModalProps) {
                 >
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                    variant="ghost"
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600"
                   >
                     <LogIn className="w-4 h-4 mr-2" />
                     Login
@@ -178,7 +179,7 @@ export function AuthModal({ open, onClose, onLogin }: AuthModalProps) {
                 >
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600"
                   >
                     <UserPlus className="w-4 h-4 mr-2" />
                     Create Account
